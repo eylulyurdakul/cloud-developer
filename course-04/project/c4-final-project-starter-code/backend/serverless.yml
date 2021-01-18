@@ -3,6 +3,8 @@ service:
 
 plugins:
   - serverless-webpack
+  - serverless-offline
+  - serverless-plugin-tracing
   - serverless-iam-roles-per-function
 
 provider:
@@ -11,6 +13,20 @@ provider:
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
+
+  environment:
+    TODO_ITEMS_TABLE: eylul-serverless-todo-application-${self:provider.stage}
+    BUCKET_NAME: eylul-serverless-todo-application-${self:provider.stage}
+    SIGNED_URL_EXPIRATION: 500
+
+  tracing: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+      Resource:
+          - "*"
 
 functions:
 
